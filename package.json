@@ -8,13 +8,24 @@
     "build": "tsc",
     "start": "npm run build && node dist/index.js",
     "dev": "tsx src/index.ts",
+    "dev-old": "tsx src/index-old.ts",
     "lint": "tsc --noEmit",
     "clean": "rm -rf dist"
   },
   "dependencies": {
-    "dotenv": "^17.2.0"
+    "@inquirer/prompts": "^7.6.0",
+    "boxen": "^8.0.1",
+    "chalk": "^5.4.1",
+    "cli-spinners": "^3.2.0",
+    "commander": "^14.0.0",
+    "dotenv": "^17.2.0",
+    "figlet": "^1.8.2",
+    "gradient-string": "^3.0.0",
+    "inquirer": "^12.7.0",
+    "ora": "^8.2.0"
   },
   "devDependencies": {
+    "@types/figlet": "^1.7.0",
     "@types/node": "^20.0.0",
     "tsx": "^4.7.0",
     "typescript": "^5.0.0"
