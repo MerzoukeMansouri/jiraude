@@ -11,7 +11,9 @@
     "lint": "tsc --noEmit",
     "clean": "rm -rf dist"
   },
-  "dependencies": {},
+  "dependencies": {
+    "dotenv": "^17.2.0"
+  },
   "devDependencies": {
     "@types/node": "^20.0.0",
     "tsx": "^4.7.0",

@@ -1,11 +1,11 @@
 import { JiraIssue, JiraUpdaterConfig } from '../types/index.js';
-import { DEFAULT_JIRA_CONFIG } from '../config/default-config.js';
+import { getDefaultJiraConfig } from '../config/default-config.js';
 
 export class JiraClient {
     private config: JiraUpdaterConfig;
 
     constructor(config?: Partial<JiraUpdaterConfig>) {
-        this.config = { ...DEFAULT_JIRA_CONFIG, ...config };
+        this.config = { ...getDefaultJiraConfig(), ...config };
     }
 
     private getApiUrl(endpoint: string): string {
@@ -14,7 +14,7 @@ export class JiraClient {
 
     private getHeaders(): Record<string, string> {
         return {
-            'Authorization': this.config.authToken,
+            'Authorization': `Bearer ${this.config.authToken}`,
             'Content-Type': 'application/json',
         };
     }

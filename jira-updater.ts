@@ -1,4 +1,7 @@
 import { execSync } from 'child_process';
+import { config } from 'dotenv';
+import { DEFAULT_JIRA_CONFIG } from './src/config/default-config.js';
+config({ path: '.env.local' });
 
 interface TemplateSection {
     title: string;
@@ -9,17 +12,17 @@ interface TemplateSection {
 
 interface JiraUpdaterConfig {
     baseUrl?: string;
-    bearerToken?: string;
+    authToken?: string;
     apiVersion?: string;
 }
 
 class JiraUpdater {
     private config: JiraUpdaterConfig;
-
     constructor(config: JiraUpdaterConfig = {}) {
+        console.log(process.env.JIRA_TOKEN, "TOTO");
         this.config = {
-            baseUrl: 'https://jira.adeo.com',
-            bearerToken: '<YOUR_BEARER_TOKEN_HERE>', // Replace with your actual token
+            baseUrl: DEFAULT_JIRA_CONFIG.jiraApiUrl,
+            authToken: DEFAULT_JIRA_CONFIG.authToken,
             apiVersion: '2',
             ...config
         };
@@ -30,8 +33,9 @@ class JiraUpdater {
     }
 
     private getHeaders(): HeadersInit {
+        
         return {
-            'Authorization': `Bearer ${this.config.bearerToken}`,
+            'Authorization': `Bearer ${this.config.authToken}`,
             'Content-Type': 'application/json',
             'Accept': 'application/json'
         };

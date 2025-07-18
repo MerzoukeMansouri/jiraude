@@ -48,7 +48,7 @@ export class ClaudeClient {
                             } catch {}
                             
                             if (error) {
-                                if (error.code === 'ETIMEDOUT') {
+                                if ((error as any).code === 'ETIMEDOUT') {
                                     resolve({
                                         content: '',
                                         success: false,
@@ -230,7 +230,7 @@ Generate content that is:
 
     validateResponse(response: ClaudeResponse): boolean {
         return response.success && 
-               response.content && 
+               !!response.content && 
                response.content.trim().length > 0 &&
                !response.error;
     }

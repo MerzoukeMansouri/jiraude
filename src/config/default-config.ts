@@ -1,8 +1,14 @@
 import { TemplateSection, JiraUpdaterConfig } from '../types/index.js';
 
+export const getDefaultJiraConfig = (): JiraUpdaterConfig => ({
+    jiraApiUrl: 'https://jira.adeo.com',
+    authToken: process.env.JIRA_TOKEN || '',
+    timeout: 30000
+});
+
 export const DEFAULT_JIRA_CONFIG: JiraUpdaterConfig = {
     jiraApiUrl: 'https://jira.adeo.com',
-    authToken: process.env.JIRA_TOKEN || 'Bearer <YOUR_BEARER_TOKEN_HERE>', // Replace with your actual token
+    authToken: process.env.JIRA_TOKEN || '',
     timeout: 30000
 };
 
@@ -12,7 +18,7 @@ export const DEFAULT_TEMPLATE_SECTIONS: TemplateSection[] = [
         required: true,
         backgroundColor: '#fceae6',
         titleBackgroundColor: '#e76f51',
-        adminPrompt: `Explain WHY this work is needed - business justification, background information, and motivation. Be extremely concise and focus only on essential context.`,
+        adminPrompt: `Expliquez POURQUOI ce travail est nécessaire - justification métier, informations de contexte et motivation. Soyez extrêmement concis et concentrez-vous uniquement sur le contexte essentiel.`,
         userPrompt: 'What background context should be included to explain why this work is needed?'
     },
     {
@@ -20,7 +26,7 @@ export const DEFAULT_TEMPLATE_SECTIONS: TemplateSection[] = [
         required: true,
         backgroundColor: '#edfaf9',
         titleBackgroundColor: '#2a9d8f',
-        adminPrompt: `Focus on WHAT and WHY, not HOW. Explain business goals, benefits, and desired outcomes. Avoid technical implementation details.`,
+        adminPrompt: `Concentrez-vous sur QUOI et POURQUOI, pas COMMENT. Expliquez les objectifs métier, les bénéfices et les résultats attendus. Évitez les détails d'implémentation technique.`,
         userPrompt: 'What needs to be accomplished and why is this work important (avoid technical implementation details)?'
     },
     {
@@ -28,7 +34,7 @@ export const DEFAULT_TEMPLATE_SECTIONS: TemplateSection[] = [
         required: false,
         backgroundColor: '#f0f3ff',
         titleBackgroundColor: '#6366f1',
-        adminPrompt: `Focus on HOW the work will be implemented. Include technical constraints, dependencies, specifications, technology stack, performance requirements, and implementation approach.`,
+        adminPrompt: `Concentrez-vous sur COMMENT le travail sera implémenté. Incluez les contraintes techniques, les dépendances, les spécifications, la stack technologique, les exigences de performance et l'approche d'implémentation.`,
         userPrompt: 'What specific technical requirements, constraints, and implementation details need to be defined?'
     },
     {
@@ -36,7 +42,7 @@ export const DEFAULT_TEMPLATE_SECTIONS: TemplateSection[] = [
         required: true,
         backgroundColor: '#dcf3f9',
         titleBackgroundColor: '#457b9d',
-        adminPrompt: `Define specific, measurable, testable conditions that must be met. Use clear bullet points or Given/When/Then format. Include functional and non-functional requirements.`,
+        adminPrompt: `Définissez des conditions spécifiques, mesurables et testables qui doivent être remplies. Utilisez des puces claires ou le format Étant donné/Quand/Alors. Incluez les exigences fonctionnelles et non-fonctionnelles.`,
         userPrompt: 'What specific criteria must be met for this ticket to be considered complete?'
     }
 ];

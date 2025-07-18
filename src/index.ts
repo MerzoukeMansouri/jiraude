@@ -1,5 +1,15 @@
 #!/usr/bin/env node
 
+import { config } from 'dotenv';
+import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+const envPath = join(__dirname, '../.env.local');
+config({ path: envPath });
+
+// Import after dotenv to ensure config has access to environment variables
 import { JiraUpdater } from './app.js';
 import { JiraClient } from './api/jira-client.js';
 
