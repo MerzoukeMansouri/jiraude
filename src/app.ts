@@ -53,22 +53,17 @@ export class JiraUpdater {
         const sectionsWithContent: Array<{ section: TemplateSection; content: string }> = [];
 
         for (const section of sections) {
-            console.log(`\n🔄 Processing section: ${section.name}`);
-            
             const userContext = await this.ui.collectUserContext(section.name);
             
             let claudeResponse = '';
             if (userContext !== '') {
-                console.log('🤖 Asking Claude for suggestions...');
+                console.log('🤖 Génération...');
                 const response = await this.claudeClient.generateSectionContent(section, issueData, userContext);
                 if (response.success) {
                     claudeResponse = response.content;
                 } else {
-                    this.ui.displayError(`Claude error: ${response.error}`);
-                    console.log('💡 Continuing without Claude suggestions. You can write content manually.');
+                    this.ui.displayError(`Erreur Claude: ${response.error}`);
                 }
-            } else {
-                console.log('💡 No context provided. Skipping Claude suggestions - you can write content manually.');
             }
 
             const content = await this.ui.promptForSectionContent(section, issueData, claudeResponse);
@@ -95,32 +90,29 @@ export class JiraUpdater {
                 try {
                     switch (choice) {
                         case '1':
-                            this.ui.displayProgress('Replacing description with template...');
                             await this.jiraClient.updateIssueDescription(issueKey, jiraTemplate);
-                            this.ui.displaySuccess('Description replaced successfully!');
+                            this.ui.displaySuccess('Description remplacée!');
                             await this.promptForNextJira();
                             resolve();
                             break;
                         case '2':
                             const existingDescription = issue.fields.description || '';
                             const newDescription = existingDescription + '\n\n' + jiraTemplate;
-                            this.ui.displayProgress('Appending template to existing description...');
                             await this.jiraClient.updateIssueDescription(issueKey, newDescription);
-                            this.ui.displaySuccess('Template appended successfully!');
+                            this.ui.displaySuccess('Template ajouté!');
                             await this.promptForNextJira();
                             resolve();
                             break;
                         case '3':
-                            this.ui.displayProgress('Starting over...');
                             await this.updateDescription(issueKey);
                             resolve();
                             break;
                         case 'q':
-                            console.log('👋 Exiting...');
+                            console.log('👋 Au revoir!');
                             process.exit(0);
                             break;
                         default:
-                            this.ui.displayError('Invalid choice. Please choose 1, 2, 3, or q');
+                            this.ui.displayError('Choix invalide. Veuillez choisir 1, 2, 3 ou q');
                             process.exit(1);
                     }
                 } catch (error) {

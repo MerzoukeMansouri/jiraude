@@ -22,16 +22,12 @@ async function main(): Promise<void> {
         process.exit(1);
     }
     
-    console.log('🚀 Jira API Updater');
-    console.log('===================');
-    console.log(`Issue: ${issueKey}`);
-    console.log(`Base URL: https://jira.adeo.com`);
+    console.log(`🚀 ${issueKey}`);
     
     try {
-        // Fetch the issue to get the summary
         const jiraClient = new JiraClient();
         const issue = await jiraClient.getIssue(issueKey);
-        console.log(`Title: ${issue.fields.summary}\n`);
+        console.log(`${issue.fields.summary}\n`);
         
         const updater = new JiraUpdater();
         await updater.updateDescription(issueKey, issue);

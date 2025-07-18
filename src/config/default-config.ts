@@ -54,8 +54,8 @@ export const CLI_TIMEOUTS = {
 };
 
 export const MENU_OPTIONS = [
-    { choice: '1', description: 'Replace description with this template' },
-    { choice: '2', description: 'Append template to existing description' },
-    { choice: '3', description: 'Start over (rebuild template)' },
-    { choice: 'q', description: 'Quit' }
+    { choice: '1', description: 'Remplacer la description par ce modèle' },
+    { choice: '2', description: 'Ajouter le modèle à la description existante' },
+    { choice: '3', description: 'Recommencer (reconstruire le modèle)' },
+    { choice: 'q', description: 'Quitter' }
 ];

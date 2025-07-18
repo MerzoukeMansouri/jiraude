@@ -204,7 +204,7 @@ Generate content that is:
         }
         
         if (issueData.fields.description) {
-            info.push(`• Current Description: ${issueData.fields.description}`);
+            info.push(`• Description actuelle : ${issueData.fields.description}`);
         }
         
         return info.join('\n');
@@ -212,7 +212,18 @@ Generate content that is:
 
     async generateSectionContent(section: TemplateSection, issueData: JiraIssue, userContext?: string): Promise<ClaudeResponse> {
         const prompt = this.getClaudePromptForSection(section, issueData, userContext);
-        return await this.callClaudeCLI(prompt);
+        const response = await this.callClaudeCLI(prompt);
+        
+        // Translate to French if response is in English
+        if (response.success && response.content) {
+            const translatedContent = await this.translateToFrenchIfNeeded(response.content);
+            return {
+                ...response,
+                content: translatedContent
+            };
+        }
+        
+        return response;
     }
 
     async improveSectionContent(section: TemplateSection, currentContent: string, feedback: string): Promise<ClaudeResponse> {
@@ -225,7 +236,18 @@ Generate content that is:
                       `Use single asterisks (*) for emphasis, never double (**). ` +
                       `Keep your response under ${section.name === 'Context' ? '100' : '150'} words and focus only on essential information.`;
         
-        return await this.callClaudeCLI(prompt);
+        const response = await this.callClaudeCLI(prompt);
+        
+        // Translate to French if response is in English
+        if (response.success && response.content) {
+            const translatedContent = await this.translateToFrenchIfNeeded(response.content);
+            return {
+                ...response,
+                content: translatedContent
+            };
+        }
+        
+        return response;
     }
 
     validateResponse(response: ClaudeResponse): boolean {
@@ -237,5 +259,44 @@ Generate content that is:
 
     setTimeout(timeout: number): void {
         this.timeout = timeout;
+    }
+
+    private isEnglishText(text: string): boolean {
+        // Simple heuristic: check for common English words and patterns
+        const englishWords = [
+            'the', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for', 'of', 'with', 'by',
+            'from', 'up', 'about', 'into', 'through', 'during', 'before', 'after', 'above',
+            'below', 'between', 'among', 'this', 'that', 'these', 'those', 'will', 'would',
+            'should', 'could', 'can', 'may', 'might', 'must', 'shall', 'implementation',
+            'requirements', 'development', 'features', 'functionality', 'ensure', 'provide',
+            'support', 'include', 'system', 'user', 'data', 'application', 'component'
+        ];
+        
+        const lowerText = text.toLowerCase();
+        const matchCount = englishWords.filter(word => lowerText.includes(` ${word} `) || lowerText.startsWith(`${word} `) || lowerText.endsWith(` ${word}`)).length;
+        
+        // If more than 3 common English words found, likely English text
+        return matchCount > 3;
+    }
+
+    private async translateToFrenchIfNeeded(content: string): Promise<string> {
+        if (!this.isEnglishText(content)) {
+            return content; // Already in French or not English
+        }
+
+        const translationPrompt = `Translate the following text to French while maintaining the same professional tone, technical accuracy, and formatting. Keep any technical terms that are commonly used in French IT contexts. Do not add any explanations or comments, just provide the translation:
+
+${content}`;
+
+        try {
+            const translationResponse = await this.callClaudeCLI(translationPrompt);
+            if (translationResponse.success && translationResponse.content) {
+                return translationResponse.content;
+            }
+        } catch (error) {
+            console.log('⚠️  Translation failed, keeping original content');
+        }
+
+        return content; // Return original if translation fails
     }
 }

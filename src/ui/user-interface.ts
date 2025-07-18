@@ -19,9 +19,7 @@ export class UserInterface {
     }
 
     async collectUserContext(sectionTitle: string): Promise<string> {
-        console.log(`\n💬 Provide additional context for the "${sectionTitle}" section:`);
-        console.log('(This helps Claude generate more relevant suggestions)');
-        console.log('\n(Press Enter twice to finish, or type "skip" for no additional context)');
+        console.log(`\n💬 Contexte pour "${sectionTitle}":`);
         console.log('> ');
         
         return new Promise((resolve) => {
@@ -56,16 +54,9 @@ export class UserInterface {
     }
 
     async promptForSectionContent(section: TemplateSection, issueData: any, claudeResponse?: string): Promise<string> {
-        console.log(`\n📝 Section: ${section.name}`);
-        console.log('='.repeat(50));
+        console.log(`\n📝 ${section.name}`);
         
         if (claudeResponse && claudeResponse.trim()) {
-            console.log('🤖 Claude\'s suggestion:');
-            console.log(claudeResponse);
-            console.log('\n' + '='.repeat(50));
-            
-            // Directly open in VSCode for editing
-            console.log('🚀 Opening suggestion in VSCode for editing...');
             const vscodeEdited = await this.editInVSCode(claudeResponse, section.name);
             return vscodeEdited || claudeResponse.trim();
         }
@@ -160,7 +151,7 @@ export class UserInterface {
         MENU_OPTIONS.forEach(option => {
             console.log(`${option.choice} - ${option.description}`);
         });
-        console.log('\nChoose an option (1-4 or q): ');
+        console.log('\nChoix (1-4 ou q): ');
     }
 
     async getMenuChoice(): Promise<string> {
@@ -172,16 +163,13 @@ export class UserInterface {
     }
 
     displayCurrentDescription(description: string): void {
-        console.log('\n📄 Current Description:');
-        console.log(description || '(No description)');
-        console.log('\n' + '='.repeat(50));
+        console.log('\n📄 Description actuelle :');
+        console.log(description || '(Aucune description)');
     }
 
     displayGeneratedTemplate(template: string): void {
-        console.log('\n📋 Generated Template:');
-        console.log('='.repeat(50));
+        console.log('\n📋 Template généré :');
         console.log(template);
-        console.log('='.repeat(50));
     }
 
     displayIssueInfo(issueKey: string, jiraUrl: string): void {
