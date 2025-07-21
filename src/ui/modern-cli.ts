@@ -95,37 +95,28 @@ export class ModernCLI {
     async editSectionContent(sectionName: string, initialContent: string = ''): Promise<string> {
         this.showSectionHeader(sectionName);
         
-        console.log(chalk.yellow(`🔍 Debug: editSectionContent appelé pour "${sectionName}"`));
-        console.log(chalk.yellow(`🔍 Debug: initialContent length = ${initialContent.length}`));
         
         // Always use VSCode for editing (no confirmation needed)
-        console.log(chalk.yellow(`🔍 Debug: Appel editInVSCode...`));
         return await this.editInVSCode(initialContent, sectionName);
     }
 
     private checkVSCodeAvailable(): boolean {
-        console.log(chalk.yellow(`🔍 Debug: Vérification de VSCode...`));
         
         try {
             const result = execSync('which code-insiders', { stdio: 'pipe' });
-            console.log(chalk.yellow(`🔍 Debug: which code-insiders = ${result.toString().trim()}`));
             return true;
         } catch (error) {
-            console.log(chalk.yellow(`🔍 Debug: which code-insiders failed: ${error.message}`));
             
             try {
                 const result = execSync('code-insiders --version', { stdio: 'pipe' });
-                console.log(chalk.yellow(`🔍 Debug: code-insiders --version = ${result.toString().trim()}`));
                 return true;
             } catch (error2) {
-                console.log(chalk.yellow(`🔍 Debug: code-insiders --version failed: ${error2.message}`));
                 return false;
             }
         }
     }
 
     private async editInVSCode(content: string, sectionName: string): Promise<string> {
-        console.log(chalk.yellow(`🔍 Debug: editInVSCode appelé pour "${sectionName}"`));
         
         // Check if VSCode is available
         if (!this.checkVSCodeAvailable()) {
@@ -146,11 +137,9 @@ ${content}`;
             
             writeFileSync(tempFilePath, fileContent, 'utf8');
             
-            console.log(chalk.yellow(`🔍 Debug: Fichier créé: ${tempFilePath}`));
             this.showInfo(`📝 Fichier temporaire créé: ${tempFilePath}`);
             this.showInfo(`🚀 Ouverture dans VSCode...`);
             
-            console.log(chalk.yellow(`🔍 Debug: Exécution: code-insiders --wait "${tempFilePath}"`));
             
             // Open in VSCode and wait for it to close
             try {
@@ -161,13 +150,8 @@ ${content}`;
                 });
             } catch (error) {
                 // If the error is just about the process exit code, but the file was edited, continue
-                console.log(chalk.yellow(`🔍 Debug: Erreur execSync (peut être normale): ${error.message}`));
-                if (error.status !== 0) {
-                    console.log(chalk.yellow(`🔍 Debug: Exit code: ${error.status}`));
-                }
             }
             
-            console.log(chalk.yellow(`🔍 Debug: VSCode fermé, lecture du fichier...`));
             
             // Read the edited content
             const editedContent = readFileSync(tempFilePath, 'utf8');
@@ -189,7 +173,6 @@ ${content}`;
             
         } catch (error: any) {
             this.showError(`❌ Erreur avec l'édition VSCode: ${error.message}`);
-            console.log(chalk.red(`🔍 Debug: Erreur complète: ${error.stack}`));
             
             // Clean up temp file if it exists
             try {

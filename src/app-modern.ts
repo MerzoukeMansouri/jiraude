@@ -59,33 +59,27 @@ export class ModernJiraUpdater {
             // Collect context and determine approach
             const userContext = await this.cli.collectSectionContext(section.name);
             
-            this.logger.debug(`🔍 Debug: userContext = "${userContext}"`);
             
             let content = '';
             
             if (userContext === '') {
                 // User chose to skip
-                this.logger.debug('🔍 Debug: User chose to skip');
                 content = '';
             } else if (userContext === '__WRITE_DIRECTLY__') {
                 // User wants to write directly
-                this.logger.debug('🔍 Debug: User wants to write directly');
                 content = await this.cli.editSectionContent(section.name, '');
             } else {
                 // User provided context for AI generation
-                this.logger.debug('🔍 Debug: User provided context for AI');
                 this.cli.startSpinner('Claude génère du contenu...');
                 const response = await this.claudeClient.generateSectionContent(section, issue, userContext);
                 
                 if (response.success) {
                     this.cli.succeedSpinner('Contenu généré par Claude');
-                    this.logger.debug('🔍 Debug: AI generation successful, opening editor');
                     // Let user edit the AI-generated content
                     content = await this.cli.editSectionContent(section.name, response.content);
                 } else {
                     this.cli.failSpinner('Erreur Claude');
                     this.logger.error(`Erreur Claude: ${response.error}`);
-                    this.logger.debug('🔍 Debug: AI generation failed, fallback to manual');
                     // Fallback to manual writing
                     content = await this.cli.editSectionContent(section.name, '');
                 }

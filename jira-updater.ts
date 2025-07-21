@@ -19,7 +19,6 @@ interface JiraUpdaterConfig {
 class JiraUpdater {
     private config: JiraUpdaterConfig;
     constructor(config: JiraUpdaterConfig = {}) {
-        console.log(process.env.JIRA_TOKEN, "TOTO");
         this.config = {
             baseUrl: DEFAULT_JIRA_CONFIG.jiraApiUrl,
             authToken: DEFAULT_JIRA_CONFIG.authToken,
